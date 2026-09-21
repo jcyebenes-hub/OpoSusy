@@ -1,0 +1,6 @@
+{
+  "name": "OPO-PRO · Monitora Infantil Sant Joan d'Alacant",
+  "description": "Preparador de oposiciones de élite para Monitora Infantil de Educación (C1, funcionario de carrera) del Ayuntamiento de Sant Joan d'Alacant (OPE 2026). Simulacros oficiales, test por temas, supuestos prácticos, juegos y tutor IA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
