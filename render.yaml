@@ -31,9 +31,8 @@ services:
     plan: free
     schedule: "*/10 * * * *"
     nodeVersion: "22"
-    buildCommand: echo "keepalive: sin dependencias que instalar"
-    startCommand: |
-      node -e "fetch(process.env.KEEPALIVE_URL, {method: 'GET'}).then(r => console.log('keepalive ping OK:', r.status)).catch(e => { console.error('keepalive ping FAIL:', e.message); process.exit(0); })"
+    buildCommand: echo keepalive
+    startCommand: 'node -e "fetch(process.env.KEEPALIVE_URL).then(r=>console.log(r.status)).catch(e=>console.error(String(e)))"'
     envVars:
       # Si cambias el nombre del servicio web, actualiza esta URL
       # (https://NOMBRE-SERVICIO.onrender.com/api/health)
