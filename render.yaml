@@ -1,0 +1,41 @@
+# Render Blueprint — OPO-PRO (OpoSusy)
+# Despliegue con un clic: Render Dashboard -> New -> Blueprint
+#
+#   1. Servicio web "oposusy-opo-pro": la app (Express + Vite build)
+#   2. Cron "oposusy-keepalive": ping cada 10 min para que el plan
+#      gratuito no ponga el servicio en "sleep" y la página cargue al momento.
+#
+# Selecciona la rama arena/01a0c488-oposusy al importar para que cada push
+# que hagamos aquí se despliegue automáticamente.
+
+services:
+  - type: web
+    name: oposusy-opo-pro
+    runtime: node
+    plan: free
+    region: frankfurt
+    nodeVersion: "22"
+    buildCommand: npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: GEMINI_API_KEY
+        description: "Opcional. Sin ella la app funciona igual, solo se desactiva el tutor IA y el generador de preguntas dinámicas."
+      - key: NODE_ENV
+        value: production
+
+  - type: cron
+    name: oposusy-keepalive
+    runtime: node
+    plan: free
+    schedule: "*/10 * * * *"
+    nodeVersion: "22"
+    buildCommand: echo "keepalive: sin dependencias que instalar"
+    startCommand: |
+      node -e "fetch(process.env.KEEPALIVE_URL, {method: 'GET'}).then(r => console.log('keepalive ping OK:', r.status)).catch(e => { console.error('keepalive ping FAIL:', e.message); process.exit(0); })"
+    envVars:
+      # Si cambias el nombre del servicio web, actualiza esta URL
+      # (https://NOMBRE-SERVICIO.onrender.com/api/health)
+      - key: KEEPALIVE_URL
+        value: "https://oposusy-opo-pro.onrender.com/api/health"
