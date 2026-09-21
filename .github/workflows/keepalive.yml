@@ -22,7 +22,9 @@ jobs:
     steps:
       - name: Ping the Render service
         env:
-          TARGET_URL: ${{ vars.RENDER_APP_URL }}
+          # Si se define la variable de repo RENDER_APP_URL se usa esa;
+          # si no, se usa la URL del servicio por defecto (no es un secreto).
+          TARGET_URL: ${{ vars.RENDER_APP_URL || 'https://oposusy-opo-pro.onrender.com' }}
         run: |
           if [ -z "$TARGET_URL" ]; then
             echo "RENDER_APP_URL no esta configurada: se omite el ping."
