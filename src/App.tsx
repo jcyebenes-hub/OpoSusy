@@ -9,6 +9,7 @@ import { PlanEstudioView } from './components/PlanEstudioView';
 import { SeguimientoFallosView } from './components/SeguimientoFallosView';
 import { PuzzlePlazaView } from './components/PuzzlePlazaView';
 import { AITutorModal } from './components/AITutorModal';
+import { AppInstallBanner } from './components/AppInstallBanner';
 import { UserStats, Question } from './types';
 import { loadUserStats, saveUserStats } from './utils/storage';
 import { Sparkles, MessageSquare, ShieldCheck, MapPin, ExternalLink } from 'lucide-react';
@@ -61,6 +62,13 @@ export default function App() {
           userStats={userStats}
           onOpenAITutor={() => handleOpenAITutor()}
         />
+      )}
+
+      {/* Banner de instalación PWA (solo si la app no está instalada) */}
+      {!isImmersiveTestActive && (
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-4 sm:pt-5">
+          <AppInstallBanner />
+        </div>
       )}
 
       {/* Main Content Area */}

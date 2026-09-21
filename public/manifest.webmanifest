@@ -1,0 +1,20 @@
+{
+  "name": "OPO-PRO · Monitora Infantil Sant Joan d'Alacant",
+  "short_name": "OPO-PRO",
+  "description": "Preparador de oposiciones de élite para Monitora Infantil de Educación (C1, carrera) del Ayuntamiento de Sant Joan d'Alacant (OPE 2026). Simulacros oficiales, test por temas, supuestos prácticos, juegos y tutor IA.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "es",
+  "dir": "ltr",
+  "background_color": "#f1f5f9",
+  "theme_color": "#1d4ed8",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

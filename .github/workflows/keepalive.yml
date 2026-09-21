@@ -1,0 +1,36 @@
+name: keepalive
+
+# Pinga el servicio de Render cada 10 minutos para que el plan gratuito
+# no lo ponga en "sleep" (duerme a los 15 min de inactividad).
+#
+# NOTA: los triggers programados de GitHub Actions solo ejecutan el workflow
+# cuando esta en la rama por defecto (main). Para activarlo:
+#   1. Mergear la PR de esta rama a main.
+#   2. En el repo: Settings -> Variables and secrets -> Actions ->
+#      New repository variable -> RENDER_APP_URL = https://TU-SERVICIO.onrender.com
+#
+# Sin la variable, el workflow se salta en silencio (no rompe nada).
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the Render service
+        env:
+          # Si se define la variable de repo RENDER_APP_URL se usa esa;
+          # si no, se usa la URL del servicio por defecto (no es un secreto).
+          TARGET_URL: ${{ vars.RENDER_APP_URL || 'https://oposusy-opo-pro.onrender.com' }}
+        run: |
+          if [ -z "$TARGET_URL" ]; then
+            echo "RENDER_APP_URL no esta configurada: se omite el ping."
+            exit 0
+          fi
+          # 30s de timeout: si el servicio estaba dormido, este primer ping
+          # es el que lo despierta y tarda un poco mas.
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 45 "$TARGET_URL/api/health" || echo "000")
+          echo "Ping a $TARGET_URL/api/health -> HTTP $STATUS"
