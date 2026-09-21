@@ -31,34 +31,45 @@ npm run build && npm start
 
 ## Despliegue en Render (un clic)
 
-El repo incluye `render.yaml` (Blueprint) con dos servicios:
-
-1. **`oposusy-opo-pro`** — la app web (Express + build de Vite).
-2. **`oposusy-keepalive`** — un cron que hace ping a la app cada 10 minutos.
-   Así, en el **plan gratuito** de Render, el servicio no pasa a "sleep" y
-   **la página carga al momento** aunque lleves rato sin usarla (solo el
-   primer arranque tras un reinicio/implantación cuesta unos segundos).
+El repo incluye `render.yaml` (Blueprint) con el servicio web **`oposusy-opo-pro`**.
 
 Pasos:
 
 1. Entra en [dashboard.render.com](https://dashboard.render.com) → **New → Blueprint**.
 2. Selecciona el repo `jcyebenes-hub/OpoSusy`.
 3. **Importante:** elige la rama **`arena/01a0c488-oposusy`** (ahí se hace el trabajo diario; cada push se despliega solo, ~1-2 min).
-4. En la variable `GEMINI_API_KEY` pega tu clave (o déjala vacía si no la usas).
-5. **Apply Changes** → espera a que los dos servicios queden *Live*.
-6. Si cambias el nombre del servicio web, actualiza `KEEPALIVE_URL` en el cron
-   (tiene que apuntar a `https://TU-SERVICIO.onrender.com/api/health`).
+4. **Apply** → espera a que el servicio quede *Live*.
+5. Opcional (tutor IA): servicio → **Environment** → *Add Environment Variable* → `GEMINI_API_KEY` con tu clave.
 
-> Nota: Render **Free** duerme el servicio tras 15 min de inactividad y el
-> pinger lo despierta cada 10 min antes de que duerma. Si algún día quieres
-> arranques 100 % instantáneos garantizados, el plan *Starter* (~$7/mes)
-> elimina el sleep por completo; el keep-alive se puede eliminar.
+## Keep-alive (que la página cargue al momento)
+
+En el **plan gratuito** de Render el servicio duerme tras 15 min de inactividad.
+Para evitarlo, el repo incluye un workflow de **GitHub Actions**
+(`.github/workflows/keepalive.yml`) que pinga `/api/health` **cada 10 minutos**
+(completamente gratis en repos públicos).
+
+Para activarlo:
+
+1. **Mergear** la rama `arena/01a0c488-oposusy` a `main` (los cron de Actions solo corren en la rama por defecto).
+2. En GitHub: repo → **Settings → Variables and secrets → Actions → New repository variable**:
+   - Nombre: `RENDER_APP_URL`
+   - Valor: `https://oposusy-opo-pro.onrender.com` (tu URL real si el nombre cambió)
+
+Alternativa sin GitHub Actions: cualquier pinger gratuito (p. ej. **UptimeRobot**
+en modo HTTP, intervalo 5 min) apuntando a `https://TU-SERVICIO.onrender.com/api/health`.
+
+> Nota: Render Free duerme el servicio tras 15 min de inactividad y el pinger
+> lo mantiene despierto. Los **cron jobs de Render no tienen plan gratuito**
+> (por eso el keep-alive va por fuera). Si algún día quieres arranques 100 %
+> instantáneos garantizados, el plan *Starter* (~$7/mes) elimina el sleep
+> por completo y el pinger se puede eliminar.
 
 ## Estructura
 
 ```
 server.ts                  # Backend Express: estáticos + endpoints Gemini
-render.yaml                # Blueprint de despliegue (web + keep-alive)
+render.yaml                # Blueprint de despliegue (servicio web)
+.github/workflows/keepalive.yml  # Ping cada 10 min (anti-sleep)
 src/
   App.tsx                  # Enrutado por pestañas y estado global
   components/              # Vistas: temario, test, simulacro, supuestos, juegos, plan, fallos, tutor IA
@@ -71,6 +82,6 @@ src/
 
 | Método | Ruta                          | Descripción                                    |
 | ------ | ----------------------------- | ---------------------------------------------- |
-| GET    | `/api/health`                 | Health check (usado por Render y keep-alive)   |
+| GET    | `/api/health`                 | Health check (usado por el keep-alive)         |
 | POST   | `/api/gemini/tutor`           | Chat con el tutor OPO-PRO (requiere API key)   |
 | POST   | `/api/gemini/generate-question` | Genera preguntas de oposición dinámicas      |
