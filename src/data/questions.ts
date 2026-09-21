@@ -3,6 +3,7 @@ import { BANCO_GENERAL_EXPANDED } from './questionsGeneralBank';
 import { BANCO_PEDAGOGIA_EXPANDED } from './questionsPedagogiaBank';
 import { BANCO_SALUD_JUEGO_EXPANDED } from './questionsSaludJuegoBank';
 import { BANCO_CASOS_EXPANDED } from './questionsCasosBank';
+import { BANCO_EXAM } from './questionsExamBank';
 
 const BASE_BANCO_PREGUNTAS: Question[] = [
   // PARTE GENERAL (Temas 1-8)
@@ -1256,7 +1257,8 @@ export const BANCO_PREGUNTAS: Question[] = [
   ...BANCO_GENERAL_EXPANDED,
   ...BANCO_PEDAGOGIA_EXPANDED,
   ...BANCO_SALUD_JUEGO_EXPANDED,
-  ...BANCO_CASOS_EXPANDED
+  ...BANCO_CASOS_EXPANDED,
+  ...BANCO_EXAM
 ];
 
 // 2 CASOS PRÁCTICOS OFICIALES (EJERCICIO 2 DE LA OPOSICIÓN)
